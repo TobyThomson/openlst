@@ -85,7 +85,7 @@ void main(void) {
 	board_led_set(0);
 	#endif
 
-	dprintf1(BOOT_STRING(GIT_REV));
+	dprintf0(BOOT_STRING(GIT_REV));
 	while (1) {
 		WATCHDOG_CLEAR;
 		schedule_handle_events();

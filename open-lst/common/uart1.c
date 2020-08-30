@@ -45,18 +45,18 @@ void uart1_init(void) {
 	// Initialize the receive counter
 	uart1_rx_count = 0;
 
-	// Give USART1 priority on port 2
+	// Give USART0 priority on port 0
 	// USART0 defaults to this port so this is necessary
 	// because we don't set up the UART0 outputs
 	// when UART0_ENABLED is defined as 0
-	P2DIR = (P2DIR & ~P2DIR_PRIP0_MASK) | P2DIR_PRIP0_USART1_USART0;
+	//P2DIR = (P2DIR & ~P2DIR_PRIP0_MASK) | P2DIR_PRIP0_USART1_USART0;
 
-	// Select the "alternate 1" pin configuration for UART1
-	PERCFG &= ~(1<<1);
-	// Set the TX pin of "alternate 1" to be an output
-	P0DIR |= 1<<4;
+	// Select the "alternate 2" pin configuration for UART1
+	PERCFG |= 1<<1;
+	// Set the TX pin of "alternate 2" to be an output
+	P1DIR |= 1<<6;
 	// Select the peripheral function (rather than GPIO) for the TX and RX pins
-	P0SEL |= (1<<5) | (1<<4);
+	P1SEL |= (1<<7) | (1<<6);
 
 	// The baud rate is given by:
 	// baud_rate = (256 + BAUD_M) * 2 ^ (BAUD_E) / (2 ^ 28) * F

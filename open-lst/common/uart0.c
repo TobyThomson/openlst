@@ -42,14 +42,38 @@ static uint8_t __xdata tx_buffer[ESP_MAX_PAYLOAD];
 void uart0_init(void) {
 	uint8_t b;
 
+	/*// Initialize the receive counter
+    uart0_rx_count = 0;
+    // Select the "alternate 2" pin configuration for UART0
+    PERCFG |= 1<<0;
+    // Set the TX pin of "alternate 2" to be an output
+    P1DIR |= 1<<5;
+    // Select the peripheral function (rather than GPIO) for the TX and RX pins
+    P1SEL |= (1<<5) | (1<<4);
+    // The baud rate is given by:
+    // baud_rate = (256 + BAUD_M) * 2 ^ (BAUD_E) / (2 ^ 28) * F
+    // where F is the clock frequency
+    U0BAUD = CONFIG_UART0_BAUD;  // U0BAUD[7:0] is BAUD_M
+    // Bit 5 sets the bit order to MSB first
+    // Bits 6 and 7 are not used (they are SPI settings)
+    // For CONFIG_UART0_CGR, 12 = 115200 baud, 14 = 460800 baud
+    U0GCR = CONFIG_UART0_GCR; // U0GCR[4:0] is BAUD_M
+
+    // TODO: flow control
+    // TODO: High priority ISR
+
+    U0CSR = (1<<7) | // UART mode (not SPI)
+            (1<<6);  // receiver enable
+    U0UCR = CONFIG_UART0_UCR;*/
+
 	// Initialize the receive counter
 	uart0_rx_count = 0;
-	// Select the "alternate 2" pin configuration for UART0
-	PERCFG |= 1<<0;
-	// Set the TX pin of "alternate 2" to be an output
-	P1DIR |= 1<<5;
+	// Select the "alternate 1" pin configuration for UART0
+	PERCFG |= 0<<0;
+	// Set the TX pin of "alternate 1" to be an output
+	P0DIR |= 1<<3;
 	// Select the peripheral function (rather than GPIO) for the TX and RX pins
-	P1SEL |= (1<<5) | (1<<4);
+	P0SEL |= (1<<2) | (1<<3);
 	// The baud rate is given by:
 	// baud_rate = (256 + BAUD_M) * 2 ^ (BAUD_E) / (2 ^ 28) * F
 	// where F is the clock frequency
@@ -153,9 +177,11 @@ void dprintf0(const char * msg) {
 // To keep this fast, the index variables are in fast access RAM. We do
 // not check the UART error flags.
 void uart0_rx_isr() __interrupt (URX0_VECTOR) __using (3) {
-	uint8_t c;
-
+    uint8_t c;
 	c = U0DBUF;
+
+	P0_7 = 1;
+
 	switch (rx_esp_state) {
 		case wait_for_start0:
 			// Waiting for a packet to start
