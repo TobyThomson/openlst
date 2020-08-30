@@ -254,7 +254,7 @@ def get_parser():
     parser.add_argument(
         '-u', '--uart',
         choices=(0, 1),
-        type=int, default=1,
+        type=int, default=0,
         help="Select the radio UART to watch (0 or 1). The default is UART 1.")
     parser.add_argument(
         '--rx-socket',
