@@ -271,7 +271,7 @@ def get_parser():
     parser.add_argument(
         '--hwid',
         type=lambda x: int(x, 16),
-        default=0xFFFF,
+        default=0x0001,
         help="4-digit hexadecimal hardware ID of the radio to command")
     parser.add_argument(
         '--seqnum',
